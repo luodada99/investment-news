@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投资资讯雷达 · Investment News Radar</title>
+<!-- Google Fonts: Inter + JetBrains Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== 设计变量：暗色主题 =====
+     background: #0f1117 / card-bg: #1a1d27（按需求固定） */
+  :root{
+    --bg:#0f1117;
+    --card:#1a1d27;
+    --card-2:#20242f;       /* 卡片 hover 用 */
+    --border:#2a2e3a;
+    --border-soft:#232733;
+    --fg:#e6e9f0;
+    --fg-soft:#b8bfd0;
+    --muted:#8b92a5;
+    --muted-2:#5f6678;
+    --accent:#ff5a1f;       /* 默认主色，JS 会按赛道覆盖 */
+    --accent-soft:rgba(255,90,31,.12);
+    --radius:12px;
+    --radius-sm:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg);
+    color:var(--fg);
+    -webkit-font-smoothing:antialiased;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+  ::-webkit-scrollbar-thumb:hover{background:#3a3f4d}
+  mark{background:rgba(255,213,79,.28);color:#ffe082;border-radius:3px;padding:0 1px}
+
+  /* ===== 顶部栏 ===== */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;gap:16px;
+    padding:0 22px;height:58px;
+    background:rgba(15,17,23,.82);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
+  .brand .logo{
+    width:32px;height:32px;border-radius:9px;
+    background:linear-gradient(135deg,#ff5a1f,#ff8a3d);
+    display:grid;place-items:center;color:#fff;font-size:17px;font-weight:800;
+    box-shadow:0 4px 14px rgba(255,90,31,.32);
+  }
+  .brand .title{font-size:16px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .brand .title small{display:block;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:.12em;margin-top:1px}
+
+  /* ===== 搜索框 ===== */
+  .search{flex:1;max-width:520px;position:relative}
+  .search input{
+    width:100%;height:36px;border-radius:9px;
+    background:var(--card);border:1px solid var(--border);
+    color:var(--fg);padding:0 36px 0 38px;font-size:13.5px;font-family:inherit;
+    transition:border-color .15s,background .15s,box-shadow .15s;
+  }
+  .search input::placeholder{color:var(--muted-2)}
+  .search input:focus{outline:none;border-color:var(--accent);background:#1f2330;box-shadow:0 0 0 3px var(--accent-soft)}
+  .search .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+  .search .clear{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    width:20px;height:20px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--border);color:var(--fg-soft);font-size:13px;line-height:1;
+    display:none;place-items:center;
+  }
+  .search .clear:hover{background:var(--accent);color:#fff}
+  .search.has-text .clear{display:grid}
+
+  .topbar-right{display:flex;align-items:center;gap:14px;margin-left:auto;flex-shrink:0}
+  .refresh-time{font-size:12px;color:var(--muted);white-space:nowrap}
+  .refresh-time b{color:var(--fg-soft);font-weight:500;font-family:'JetBrains Mono',monospace}
+  .gh-link{
+    display:grid;place-items:center;width:34px;height:34px;border-radius:9px;
+    color:var(--muted);border:1px solid var(--border);background:var(--card);
+    transition:all .15s;
+  }
+  .gh-link:hover{color:var(--fg);border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ===== 主体布局 ===== */
+  .layout{display:flex;height:calc(100vh - 58px);overflow:hidden}
+
+  /* 左侧栏 */
+  .sidebar{
+    width:268px;flex-shrink:0;
+    background:var(--card);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+  }
+  .sidebar-head{padding:16px 16px 6px;display:flex;align-items:center;justify-content:space-between}
+  .sidebar-head .label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .sidebar-head .total{font-size:11px;color:var(--muted-2);font-family:'JetBrains Mono',monospace}
+  .nav{flex:1;overflow:auto;padding:6px 8px 14px}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;
+    padding:9px 12px;border-radius:8px;cursor:pointer;
+    color:var(--muted);transition:background .13s,color .13s;user-select:none;
+    border:1px solid transparent;
+  }
+  .nav-item:hover{background:var(--card-2);color:var(--fg)}
+  .nav-item .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.03)}
+  .nav-item .nm{flex:1;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+  .nav-item .cnt{
+    font-size:11px;color:var(--muted-2);font-family:'JetBrains Mono',monospace;
+    background:var(--bg);border:1px solid var(--border-soft);
+    padding:1px 7px;border-radius:999px;min-width:24px;text-align:center;
+  }
+  .nav-item.active{color:var(--fg);font-weight:600;border-color:var(--border)}
+  .nav-item.active .nm{color:var(--accent)}
+  .nav-item.active .cnt{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+  .sidebar-foot{border-top:1px solid var(--border);padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.7}
+  .sidebar-foot b{color:var(--fg-soft);font-weight:600}
+  .sidebar-foot .disclaimer{color:var(--muted-2);font-size:10px;margin-top:2px}
+
+  /* 右侧主区 */
+  .main{flex:1;overflow:auto}
+  .head{padding:24px 32px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;background:rgba(15,17,23,.88);backdrop-filter:blur(8px)}
+  .head .ttl{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+  .head .bdg{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex-shrink:0}
+  .head h1{font-size:24px;font-weight:700;letter-spacing:-.02em}
+  .head .sub{margin-top:8px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .head .sub b{color:var(--fg-soft);font-weight:600}
+  .head .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-family:'JetBrains Mono',monospace}
+
+  /* AI 今日要点卡 */
+  .digest{
+    margin:18px 30px 2px;max-width:1280px;
+    border:1px solid;border-radius:14px;padding:16px 20px 15px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .digest .dh{
+    font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+    letter-spacing:.06em;margin-bottom:13px;display:flex;align-items:center;gap:7px;
+  }
+  .digest .dh .tag{color:var(--muted);font-weight:400;letter-spacing:0;margin-left:6px}
+  .digest ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .digest li{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;line-height:1.55;color:var(--fg)}
+  .digest li .b{width:6px;height:6px;border-radius:50%;margin-top:8px;flex-shrink:0}
+  .digest li .pt{flex:1;min-width:0}
+  .digest li .dj{flex-shrink:0;text-decoration:none;font-size:14px;font-weight:700;opacity:.4;margin-top:0;padding:0 2px;transition:opacity .12s,transform .12s;line-height:1.55}
+  .digest li:hover .dj{opacity:.85}
+  .digest li .dj:hover{opacity:1;transform:translate(1px,-1px)}
+
+  /* AI 未就绪提示 */
+  .ai-hint{
+    margin:18px 30px 2px;max-width:1280px;
+    border:1px dashed var(--border);border-radius:14px;padding:18px 22px;
+    display:flex;align-items:center;gap:13px;color:var(--muted);font-size:13.5px;
+    background:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(255,255,255,.012) 12px,rgba(255,255,255,.012) 24px);
+  }
+  .ai-hint .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;border:1px solid var(--border);background:var(--card)}
+  .ai-hint code{font-family:'JetBrains Mono',monospace;background:var(--card);border:1px solid var(--border);padding:2px 8px;border-radius:6px;color:var(--fg-soft);font-size:12.5px}
+
+  /* 新闻列表 */
+  .list{padding:14px 30px 70px;display:flex;flex-direction:column;gap:8px;max-width:1280px}
+  .row{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:13px 16px;border:1px solid var(--border);
+    border-radius:11px;background:var(--card);
+    transition:border-color .15s,background .15s,transform .15s;
+  }
+  .row:hover{background:var(--card-2);border-color:var(--accent);transform:translateX(2px)}
+  .row .rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:7px}
+  .row .rbody{flex:1;min-width:0}
+  .row .rt{font-weight:600;font-size:14.5px;line-height:1.4;letter-spacing:-.005em;color:var(--fg);display:block}
+  .row a.rt:hover{color:var(--accent)}
+  .row .ren{margin-top:3px;font-size:12px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .rsum{margin-top:5px;font-size:12.5px;line-height:1.5;color:var(--fg-soft);opacity:.78;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+  .row .rmeta{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-top:1px}
+  .row .rsrc{font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 9px;border-radius:6px;font-weight:500;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent}
+  .row .rtm{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  /* 搜索结果中显示赛道标签 */
+  .row .rtrack{font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+  .empty{padding:56px 34px;color:var(--muted);font-size:13px;text-align:center}
+  .empty .big{font-size:42px;margin-bottom:10px;opacity:.4}
+  .section-tip{padding:8px 30px 0;font-size:12px;color:var(--muted);max-width:1280px}
+
+  /* ===== 响应式：移动端上下排列 ===== */
+  @media (max-width:860px){
+    .topbar{height:auto;padding:10px 14px;flex-wrap:wrap;gap:10px}
+    .brand .title small{display:none}
+    .search{order:3;max-width:none;flex-basis:100%}
+    .topbar-right{margin-left:auto}
+    .refresh-time{display:none}
+    .layout{flex-direction:column;height:auto;min-height:calc(100vh - 58px)}
+    .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border)}
+    .sidebar-head{display:none}
+    .nav{display:flex;flex-direction:row;overflow-x:auto;padding:10px 14px;gap:8px}
+    .nav-item{flex-shrink:0;max-width:220px}
+    .sidebar-foot{display:none}
+    .main{flex:1}
+    .head{padding:18px 18px 14px}
+    .head h1{font-size:20px}
+    .digest,.ai-hint{margin:14px 16px 2px}
+    .list{padding:12px 16px 60px}
+    .row{padding:12px 13px}
+    .row .rmeta{align-items:flex-end}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 顶部栏 ===== -->
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">▲</span>
+    <div class="title">投资资讯雷达<small>INVESTMENT NEWS RADAR</small></div>
+  </div>
+  <div class="search" id="searchWrap">
+    <svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="searchInput" type="text" placeholder="搜索全部赛道的新闻标题 / 摘要…" autocomplete="off" spellcheck="false">
+    <button class="clear" id="searchClear" title="清空">×</button>
+  </div>
+  <div class="topbar-right">
+    <div class="refresh-time" id="refreshTime">刷新时间：<b>—</b></div>
+    <a class="gh-link" href="https://github.com/luodada99/investment-news" target="_blank" rel="noopener" title="在 GitHub 上查看">
+      <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ===== 主体布局 ===== -->
+<div class="layout">
+  <!-- 左侧赛道导航 -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <span class="label">赛道 / Sectors</span>
+      <span class="total" id="navTotal">—</span>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot" id="foot"></div>
+  </aside>
+
+  <!-- 右侧主区 -->
+  <main class="main">
+    <div class="head" id="head"></div>
+    <div id="board"></div>
+  </main>
+</div>
+
+<script>
+/* ====================================================================
+   投资资讯雷达 · 前端逻辑（纯原生 JS，零框架）
+   数据来源：同级目录 data.js，通过动态 <script> 标签注入 window.DATA
+   数据结构示例：
+     window.DATA = {
+       generated_at: "2026-06-28 09:00",
+       recent_days: 7,
+       has_ai: true,                 // 是否已生成 AI 要点
+       stats: { total_sources: 80 },
+       industries: [
+         { key, name, accent, total, items:[{title,url,time,summary,source,zh}],
+           points:[{t,url}] }
+       ]
+     }
+   ==================================================================== */
+
+var DATA = { industries: [] };   // 兜底空数据
+var activeKey = null;            // 当前选中赛道
+var searchQuery = '';            // 当前搜索关键字
+
+/* ---- 工具函数 ---- */
+// HTML 转义，防止注入
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+// #rrggbb + 透明度(0-1) -> rgba 字符串
+function hexA(hex, a){
+  if(!hex) return 'rgba(255,90,31,'+a+')';
+  var n = hex.replace('#','');
+  if(n.length===3) n = n[0]+n[0]+n[1]+n[1]+n[2]+n[2];
+  var r=parseInt(n.substr(0,2),16), g=parseInt(n.substr(2,2),16), b=parseInt(n.substr(4,2),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+
+// 关键字高亮（在已转义文本上操作，安全）
+function highlight(escapedHtml, q){
+  if(!q) return escapedHtml;
+  var eq = esc(q);
+  if(!eq) return escapedHtml;
+  var re = new RegExp(eq.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+  return escapedHtml.replace(re, function(m){return '<mark>'+m+'</mark>';});
+}
+
+// 判断是否展示 AI 要点（has_ai 显式为 false 则隐藏；否则有 points 即显示，兼容旧数据）
+function shouldShowAI(ind){
+  if(DATA.has_ai === false) return false;
+  return !!(ind.points && ind.points.length);
+}
+
+/* ---- 侧边栏渲染 ---- */
+function renderSidebar(){
+  var inds = DATA.industries || [];
+  var nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  inds.forEach(function(ind){
+    var el = document.createElement('div');
+    el.className = 'nav-item';
+    el.dataset.key = ind.key;
+    el.innerHTML =
+      '<span class="dot" style="background:'+ind.accent+'"></span>' +
+      '<span class="nm">'+esc(ind.name)+'</span>' +
+      '<span class="cnt">'+(ind.items?ind.items.length:0)+'</span>';
+    el.onclick = function(){
+      // 点击赛道：清除搜索、切换内容
+      clearSearch();
+      setActive(ind.key);
+    };
+    nav.appendChild(el);
+  });
+  // 底部统计
+  var totalItems = inds.reduce(function(s,x){return s+(x.items?x.items.length:0);},0);
+  document.getElementById('navTotal').textContent = inds.length + ' 赛道';
+  document.getElementById('foot').innerHTML =
+    '<b style="color:var(--fg-soft)">'+(DATA.stats?DATA.stats.total_sources:'–')+'</b> 个信息源 · <b style="color:var(--fg-soft)">'+totalItems+'</b> 条资讯' +
+    '<div class="disclaimer">本地抓取 · 你的 AI · 仅资讯，非投资建议</div>';
+}
+
+/* ---- 切换赛道 ---- */
+function setActive(key){
+  activeKey = key;
+  var inds = DATA.industries || [];
+  var ind = inds.filter(function(x){return x.key===key;})[0];
+  if(!ind) return;
+  // 侧边栏高亮 + 注入赛道主色
+  document.documentElement.style.setProperty('--accent', ind.accent);
+  document.documentElement.style.setProperty('--accent-soft', hexA(ind.accent,0.12));
+  document.querySelectorAll('.nav-item').forEach(function(n){
+    n.classList.toggle('active', n.dataset.key===key);
+  });
+  renderMain(ind);
+}
+
+/* ---- 主区渲染：标题 + AI要点 + 新闻列表 ---- */
+function renderMain(ind){
+  var ac = ind.accent;
+  var items = ind.items || [];
+
+  // 顶部标题区
+  document.getElementById('head').innerHTML =
+    '<div class="ttl">' +
+      '<span class="bdg" style="background:'+hexA(ac,0.14)+';color:'+ac+'">●</span>' +
+      '<h1>'+esc(ind.name)+'</h1>' +
+    '</div>' +
+    '<div class="sub">共 <b>'+ind.total+'</b> 个信息源 · 本栏 <b>'+items.length+'</b> 条' +
+      '<span class="pill" style="background:'+hexA(ac,0.12)+';color:'+ac+'">最近 '+(DATA.recent_days||7)+' 天</span>' +
+      ' · 更新 <b>'+(DATA.generated_at||'—')+'</b>' +
+    '</div>';
+
+  var board = document.getElementById('board');
+  if(!items.length){
+    board.innerHTML = '<div class="empty"><div class="big">∅</div>该赛道暂未抓到条目</div>';
+    return;
+  }
+
+  // AI 今日要点（或未就绪提示）
+  var topBlock;
+  if(shouldShowAI(ind)){
+    topBlock =
+      '<div class="digest" style="border-color:'+hexA(ac,0.30)+';background:'+hexA(ac,0.06)+'">' +
+        '<div class="dh" style="color:'+ac+'">✦ AI 今日要点<span class="tag">由本地大模型生成</span></div>' +
+        '<ul>' + ind.points.map(function(p){
+            var t = (typeof p === 'string') ? p : (p.t||'');
+            var url = (p && typeof p === 'object') ? (p.url||'') : '';
+            var jump = url ? '<a class="dj" href="'+esc(url)+'" target="_blank" rel="noopener" title="跳转原文" style="color:'+ac+'">↗</a>' : '';
+            return '<li><span class="b" style="background:'+ac+'"></span><span class="pt">'+esc(t)+'</span>'+jump+'</li>';
+          }).join('') + '</ul>' +
+      '</div>';
+  }else{
+    topBlock =
+      '<div class="ai-hint">' +
+        '<span class="ic" style="color:'+ac+'">✦</span>' +
+        '<div>AI 今日要点尚未生成，请运行 <code>fetch_news.py</code> 后刷新。</div>' +
+      '</div>';
+  }
+
+  // 新闻列表
+  var rows = items.map(function(it){ return renderRow(it, ac, false); }).join('');
+  board.innerHTML = topBlock + '<div class="list">' + rows + '</div>';
+}
+
+/* ---- 单条新闻渲染 ---- */
+function renderRow(it, ac, withTrack){
+  var hasZh = it.zh && it.zh.trim();
+  var primary = esc(hasZh ? it.zh : it.title);
+  var secondary = hasZh ? esc(it.title) : '';        // 有中文则副标题显示原文标题
+  var summary = esc(it.summary || '');
+  var link = it.url ? '<a class="rt" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+primary+'</a>'
+                    : '<span class="rt">'+primary+'</span>';
+  // 找到所属赛道名（搜索结果用）
+  var trackTag = '';
+  if(withTrack){
+    var ind = (DATA.industries||[]).filter(function(x){
+      return (x.items||[]).some(function(m){return m===it;});
+    })[0];
+    if(ind) trackTag = '<div class="rtrack" style="color:'+ind.accent+'">'+esc(ind.name)+'</div>';
+  }
+  return '<div class="row">' +
+    '<span class="rdot" style="background:'+ac+'"></span>' +
+    '<div class="rbody">' + link +
+      (secondary ? '<div class="ren">'+secondary+'</div>' : '') +
+      (summary ? '<div class="rsum">'+summary+'</div>' : '') +
+    '</div>' +
+    '<div class="rmeta">' +
+      '<span class="rsrc" style="background:'+hexA(ac,0.12)+';color:'+ac+'">'+esc(it.source||'')+'</span>' +
+      '<span class="rtm">'+esc(it.time||'—')+'</span>' +
+      trackTag +
+    '</div>' +
+  '</div>';
+}
+
+/* ---- 全局搜索：跨所有赛道匹配标题/中文标题/摘要 ---- */
+function runSearch(q){
+  searchQuery = (q||'').trim();
+  var wrap = document.getElementById('searchWrap');
+  wrap.classList.toggle('has-text', searchQuery.length>0);
+
+  if(!searchQuery){
+    // 清空搜索：恢复当前赛道视图
+    if(activeKey) setActive(activeKey);
+    else renderEmpty('暂无数据');
+    return;
+  }
+  var ql = searchQuery.toLowerCase();
+  var results = [];
+  (DATA.industries||[]).forEach(function(ind){
+    (ind.items||[]).forEach(function(it){
+      var hay = [it.title, it.zh, it.summary].join(' ').toLowerCase();
+      if(hay.indexOf(ql) !== -1){
+        results.push({ ind:ind, it:it });
+      }
+    });
+  });
+
+  // 渲染搜索结果（隐藏侧边栏 active 态）
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  var ac = '#ffb454'; // 搜索结果统一主色
+  document.documentElement.style.setProperty('--accent', ac);
+  document.documentElement.style.setProperty('--accent-soft', hexA(ac,0.12));
+
+  document.getElementById('head').innerHTML =
+    '<div class="ttl"><span class="bdg" style="background:'+hexA(ac,0.14)+';color:'+ac+'">⌕</span>' +
+      '<h1>搜索结果</h1></div>' +
+    '<div class="sub">关键字 <b style="color:'+ac+'">'+esc(searchQuery)+'</b> · 共匹配 <b>'+results.length+'</b> 条（来自全部赛道）</div>';
+
+  var board = document.getElementById('board');
+  if(!results.length){
+    board.innerHTML = '<div class="empty"><div class="big">∅</div>没有匹配「'+esc(searchQuery)+'」的资讯</div>';
+    return;
+  }
+  // 按时间倒序
+  results.sort(function(a,b){ return (b.it.ts||0)-(a.it.ts||0); });
+  var rows = results.map(function(r){
+    return renderSearchRow(r.it, r.ind, searchQuery);
+  }).join('');
+  board.innerHTML = '<div class="list">' + rows + '</div>';
+}
+
+/* ---- 搜索结果单条（带高亮 + 赛道标签）---- */
+function renderSearchRow(it, ind, q){
+  var hasZh = it.zh && it.zh.trim();
+  var primary = highlight(esc(hasZh ? it.zh : it.title), q);
+  var secondary = hasZh ? highlight(esc(it.title), q) : '';
+  var summary = highlight(esc(it.summary || ''), q);
+  var link = it.url ? '<a class="rt" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+primary+'</a>'
+                    : '<span class="rt">'+primary+'</span>';
+  return '<div class="row">' +
+    '<span class="rdot" style="background:'+ind.accent+'"></span>' +
+    '<div class="rbody">' + link +
+      (secondary ? '<div class="ren">'+secondary+'</div>' : '') +
+      (summary ? '<div class="rsum">'+summary+'</div>' : '') +
+    '</div>' +
+    '<div class="rmeta">' +
+      '<span class="rtrack" style="color:'+ind.accent+'">'+esc(ind.name)+'</span>' +
+      '<span class="rsrc" style="background:'+hexA(ind.accent,0.12)+';color:'+ind.accent+'">'+esc(it.source||'')+'</span>' +
+      '<span class="rtm">'+esc(it.time||'—')+'</span>' +
+    '</div>' +
+  '</div>';
+}
+
+function clearSearch(){
+  var input = document.getElementById('searchInput');
+  input.value = '';
+  searchQuery = '';
+  document.getElementById('searchWrap').classList.remove('has-text');
+}
+
+function renderEmpty(msg){
+  document.getElementById('head').innerHTML =
+    '<div class="ttl"><span class="bdg" style="background:rgba(255,90,31,.14);color:#ff5a1f">▲</span>' +
+      '<h1>投资资讯雷达</h1></div>' +
+    '<div class="sub">暂无数据，请生成 data.js</div>';
+  document.getElementById('board').innerHTML =
+    '<div class="empty"><div class="big">∅</div>'+esc(msg||'暂无数据')+'<br><br>' +
+    '请运行 <code style="font-family:JetBrains Mono,monospace;background:var(--card);border:1px solid var(--border);padding:2px 8px;border-radius:6px">fetch_news.py</code> 生成 data.js 后刷新页面</div>';
+}
+
+/* ---- 启动：读取 window.DATA 并渲染 ---- */
+function boot(){
+  DATA = window.DATA || { industries:[] };
+  // 顶部刷新时间
+  document.getElementById('refreshTime').innerHTML =
+    '刷新时间：<b>'+(DATA.generated_at||'—')+'</b>';
+
+  var inds = DATA.industries || [];
+  if(!inds.length){
+    renderEmpty('data.js 已加载，但暂无赛道数据');
+    return;
+  }
+  renderSidebar();
+  setActive(inds[0].key);
+}
+
+/* ---- 动态加载 data.js（带时间戳防缓存）---- */
+function loadData(){
+  var s = document.createElement('script');
+  s.src = 'data.js?t=' + Date.now();
+  s.onload = boot;
+  s.onerror = function(){
+    // data.js 不存在或加载失败：展示提示
+    renderEmpty('未找到 data.js');
+    document.getElementById('refreshTime').innerHTML = '刷新时间：<b>未加载</b>';
+  };
+  document.head.appendChild(s);
+}
+
+/* ---- 事件绑定 ---- */
+document.getElementById('searchInput').addEventListener('input', function(e){
+  runSearch(e.target.value);
+});
+document.getElementById('searchClear').addEventListener('click', function(){
+  clearSearch();
+  if(activeKey) setActive(activeKey);
+});
+
+// 键盘快捷键：/ 聚焦搜索框，Esc 清空
+document.addEventListener('keydown', function(e){
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT'){
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }else if(e.key==='Escape'){
+    clearSearch();
+    if(activeKey) setActive(activeKey);
+  }
+});
+
+// 启动
+loadData();
+</script>
+</body>
+</html>
