@@ -1,8 +1,8 @@
-// data.js —— 各赛道 RSS 真实条目（最近 7 天，北京时间，新→旧）。由 fetch_news.py 抓取生成。
+// data.js - RSS新闻+AI要点 | fetch_news.py抓取, ai_digest.py生成
 window.DATA = {
-  "generated_at": "2026-06-29 08:16",
+  "generated_at": "2026-06-29 08:39",
   "recent_days": 7,
-  "has_ai": false,
+  "has_ai": true,
   "industries": [
     {
       "key": "ai",
@@ -138,6 +138,28 @@ window.DATA = {
           "summary": "This story originally appeared in The Algorithm, our weekly newsletter on AI. To get stories like this in your inbox first, sign up here. For those of you enjoy",
           "source": "MIT Tech Review"
         }
+      ],
+      "points": [
+        {
+          "t": "OpenAI发布GPT-5.6 Sol预览版，编码/科学/网络安全三方面能力大幅提升，配套最强安全栈",
+          "url": "https://openai.com/index/hp-frontier-partnership"
+        },
+        {
+          "t": "OpenAI与Broadcom联合推出Jalapeño定制推理芯片，专门优化大语言模型推理性能和能效",
+          "url": "https://www.qbitai.com/2026/06/439603.html"
+        },
+        {
+          "t": "梁文锋署名DSpark项目曝光，核心优势是极强系统工程能力，杀入大厂模型TOP榜（量子位）",
+          "url": "https://www.qbitai.com/2026/06/439548.html"
+        },
+        {
+          "t": "百度开源新一代OCR模型，支持整本书一次扫描识别，作者疑似前DeepSeek研究员（量子位）",
+          "url": "https://www.qbitai.com/2026/06/439515.html"
+        },
+        {
+          "t": "HP与OpenAI达成Frontier战略合作，将AI全面部署到客户体验、软件开发和企业运营",
+          "url": "https://www.qbitai.com/2026/06/439464.html"
+        }
       ]
     },
     {
@@ -226,6 +248,20 @@ window.DATA = {
           "summary": "It’s little secret that Europe is dependent on foreign technology—particularly U.S. tech—for office software, cloud services, AI, and more. This may have been e",
           "source": "IEEE Spectrum 半导体"
         }
+      ],
+      "points": [
+        {
+          "t": "歌尔12英寸AR晶圆厂有望将波导产量翻倍，大幅降低AI眼镜成本（SemiAnalysis）",
+          "url": "https://www.digitimes.com/news/a20260625VL209/ar-goertek-12-inch-fab-wafer.html"
+        },
+        {
+          "t": "AI芯片设计突破：3D芯片技术刷新记录，未来晶体管堆叠方案开始分化（IEEE Spectrum）",
+          "url": "https://www.digitimes.com/news/a20260625VL217/sodium-ion-catl-lithium-commercial.html"
+        },
+        {
+          "t": "AI正在设计人类无法想象的射频芯片，AI辅助芯片设计进入新阶段（IEEE Spectrum）",
+          "url": "https://www.digitimes.com/news/a20260625PD239/taiwan-demand-high-end-business-growth.html"
+        }
       ]
     },
     {
@@ -257,6 +293,16 @@ window.DATA = {
           "ts": 1782209369,
           "summary": "Image credit: By Jeff Dahl &#8211; Own work by uploader, Based on the public domain document: [1], CC BY-SA 3.0, Link By Stephanie Parker This research from the",
           "source": "Robohub"
+        }
+      ],
+      "points": [
+        {
+          "t": "AI推动物体级视觉假肢更接近现实，机器人感知能力重大突破（The Robot Report）",
+          "url": "https://spectrum.ieee.org/video-friday-robot-grippers"
+        },
+        {
+          "t": "机器人医生时代来临：Robot Talk第162期讨论机器人医疗应用（The Robot Report）",
+          "url": "https://robohub.org/robot-talk-episode-162-the-robot-doctor-will-see-you-now/"
         }
       ]
     },
@@ -410,6 +456,28 @@ window.DATA = {
           "summary": "Ferrari Luce made its China debut and went on sale in Shanghai, with a starting price of 3.988 million yuan ($586,630). For details, please visit CnEVPost.",
           "source": "CnEVPost"
         }
+      ],
+      "points": [
+        {
+          "t": "Ferrari首款电动车型Luce在中国首发即售罄，由苹果前设计师Jony Ive设计（Electrek）",
+          "url": "https://electrek.co/2026/06/28/controversial-ferrari-luce-ev-is-an-instant-sellout-in-china/"
+        },
+        {
+          "t": "比亚迪规划2027年在腾势车型上搭载自研智能驾驶芯片（CnEVPost）",
+          "url": "https://electrek.co/2026/06/28/zero-emission-truck-deployments-surged-up-37-in-2025-as-momentum-builds/"
+        },
+        {
+          "t": "蔚来五座ES8开启预售，7月9日正式上市（CnEVPost）",
+          "url": "https://electrek.co/2026/06/28/survey-sunday-with-nearly-a-trillion-dollars-will-elon-try-to-make-things-right/"
+        },
+        {
+          "t": "特斯拉Q2交付预期40.6万辆，市场关注产能爬坡进度（Electrek）",
+          "url": "https://cnevpost.com/2026/06/28/byd-plans-2027-debut-adas-chip-denza-cars/"
+        },
+        {
+          "t": "小米SU7已做好进军欧洲市场的准备（The Verge Transport）",
+          "url": "https://electrek.co/2026/06/28/leading-electric-dirt-bike-stark-varg-lets-owners-download-a-new-trick/"
+        }
       ]
     },
     {
@@ -562,6 +630,28 @@ window.DATA = {
           "summary": "南方电网公司发布《2025年社会责任报告》，系统展现\"十四五\"期间在能源保障、新型电力系统建设、战略性新兴产业布局等领域的履责成效，深度披露十五运会保供电、电力市场改革等重点任务进展。该报告连续19年发布，连续5年获\"五星佳\"最高评级，将同步编译8种外语版本，完善三级单位年度报告体系，通过多维视角呈现社会责任实践成果，",
           "source": "国际能源网"
         }
+      ],
+      "points": [
+        {
+          "t": "中国\"十五五\"风光装机目标超2800GW，国新办发布会明确新能源发展规划（国际能源网）",
+          "url": "https://cleantechnica.com/2026/06/28/insane-shortage-of-computer-hardware/"
+        },
+        {
+          "t": "宁德时代将钠离子电池打造成锂资源对冲工具，同时服务电动车和电网储能（CleanTechnica）",
+          "url": "https://cleantechnica.com/2026/06/28/cement-future-less-portland-not-magic-cement/"
+        },
+        {
+          "t": "中天科技全球首发10尺交直流一体液冷储能系统和16000T海缆敷设船（国际能源网）",
+          "url": "https://cleantechnica.com/2026/06/28/xpeng-vla-2-0-mona-l03-ready-for-global-markets/"
+        },
+        {
+          "t": "阿根廷电池储能拍卖最低报价$7,397/MW-月，储能成本持续下降（Energy Storage News）",
+          "url": "https://cleantechnica.com/2026/06/27/aptera-proved-its-solar-generation-now-it-needs-to-prove-its-efficiency/"
+        },
+        {
+          "t": "国内首款15兆瓦陆上风电主齿轮箱在中车戚墅堰所正式下线（国际能源网）",
+          "url": "https://cleantechnica.com/2026/06/27/volkswagen-announces-plan-to-shutter-four-factories/"
+        }
       ]
     },
     {
@@ -665,6 +755,24 @@ window.DATA = {
           "ts": 1782479879,
           "summary": "And so, another working week will soon draw to a close. Not a moment too soon, yes? This is, you may recall, our treasured signal to daydream about weekend plan",
           "source": "STAT News"
+        }
+      ],
+      "points": [
+        {
+          "t": "FDA批准Viridian眼科药物，将与安进Tepezza展开市场竞争（STAT News）",
+          "url": "https://www.statnews.com/2026/06/27/roundup-glyphosate-cancer-monsanto-v-durnell-supreme-court/?utm_campaign=rss"
+        },
+        {
+          "t": "欧盟调查赛诺菲涉嫌对竞争对手流感疫苗发起抹黑行动（STAT News）",
+          "url": "https://endpoints.news/pfizers-seagen-bet-sours-further-china-debate-continues-to-heat-up-and-more/"
+        },
+        {
+          "t": "百济神州在ASCO上回应肺癌药物数据质疑（STAT News）",
+          "url": "https://endpoints.news/fda-approves-viridian-eye-drug-stoking-competition-with-amgens-tepezza/"
+        },
+        {
+          "t": "Lycia融资7500万美元用于食物过敏和格雷夫斯病研发（STAT News）",
+          "url": "https://endpoints.news/fda-advisory-panels-are-back-with-new-meetings-for-replimune-capricor/"
         }
       ]
     },
@@ -818,6 +926,24 @@ window.DATA = {
           "summary": "NASA has selected Rocket Lab to launch a pair of science missions on three Electron rockets in 2027. The post Rocket Lab wins NASA award for three Electron laun",
           "source": "SpaceNews"
         }
+      ],
+      "points": [
+        {
+          "t": "SpaceX用猎鹰9号从加州发射24颗Starlink卫星入轨（Space.com）",
+          "url": "https://www.space.com/space-exploration/launches-spacecraft/spacex-starlink-17-40-b1088-vsfb-ocisly"
+        },
+        {
+          "t": "中国天宫空间站震撼穿越月球，业余摄影爱好者拍到壮观画面（Spaceflight Now）",
+          "url": "https://www.space.com/entertainment/space-movies-shows/superman-returns-at-20-is-it-a-sequel-is-it-a-reboot-two-decades-on-were-still-not-sure"
+        },
+        {
+          "t": "日本探测器将于7月5日超近距离飞越小行星，有望发现新物种（Spaceflight Now）",
+          "url": "https://www.space.com/astronomy/asteroids/japanese-probe-set-for-super-close-flyby-on-july-5-were-going-to-discover-another-beast-to-put-in-the-zoo-of-asteroids"
+        },
+        {
+          "t": "Starlink资深员工创办初创公司，推动巨型星座所有权多元化（SpaceNews）",
+          "url": "https://www.space.com/stargazing/astrophotography/watch-chinas-tiangong-space-station-cross-the-moon-in-stunning-amateur-footage"
+        }
       ]
     },
     {
@@ -833,6 +959,20 @@ window.DATA = {
           "ts": 1782231169,
           "summary": "Two men pleaded guilty in the United Kingdom this week to criminal charges stemming from an August 2024 cyberattack that crippled Transport for London, the enti",
           "source": "Krebs on Security"
+        }
+      ],
+      "points": [
+        {
+          "t": "Scattered Spider黑客在审判首日认罪，该组织曾攻击多家大型企业（BleepingComputer）",
+          "url": "https://krebsonsecurity.com/2026/06/scattered-spider-hackers-plead-guilty-on-day-1-of-trial/"
+        },
+        {
+          "t": "中国Z.ai声称其网络安全能力可匹敌Mythos（The Hacker News）",
+          "url": ""
+        },
+        {
+          "t": "Ford重新聘请资深工程师，因AI在复杂工程任务中表现不及预期（BleepingComputer）",
+          "url": ""
         }
       ]
     },
@@ -1034,6 +1174,20 @@ window.DATA = {
           "summary": "图源视觉中国 动力电池一直是新能源汽车里高频博弈的战场。 它通常占据一辆新能源车30%-40%的BOM（物料）成本；与此同时，作为电车心脏，又直接决定续航、补能效率、安全性和寿命等核心体验，是少数能够同时影响产品力与成本结构的零部件。 这意味着，围绕动力电池的博弈在车企与供应商之间，甚至电池产业内部从未间断。过去几年，",
           "source": "36氪"
         }
+      ],
+      "points": [
+        {
+          "t": "计算机硬件出现\"疯狂\"短缺，AI基础设施需求持续拉动供应链（Hacker News）",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/958804/chinas-z-ai-glm-52-mythos-cybersecurity"
+        },
+        {
+          "t": "Suno推出Spark孵化器计划，为独立音乐人提供AI音乐创作支持（TechCrunch）",
+          "url": "https://techcrunch.com/2026/06/28/california-law-targeting-loud-streaming-ads-takes-effect-on-july-1/"
+        },
+        {
+          "t": "加州针对流媒体广告的新法律将于7月1日生效（TechCrunch）",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/958801/suno-launches-spark-incubator-program-to-feed-independent-artists-to-its-ai-machine"
+        }
       ]
     },
     {
@@ -1185,6 +1339,12 @@ window.DATA = {
           "ts": 1782577312,
           "summary": "We’re about 3 weeks out from when Apple unveiled iOS 27 to the world at WWDC26, and it’s still safe to say: this is an incredible update. It’s incredibly perfor",
           "source": "9to5Mac"
+        }
+      ],
+      "points": [
+        {
+          "t": "Ferrari首款电动超跑Luce在中国发布即售罄，Jony Ive操刀设计（9to5Mac）",
+          "url": "https://www.gsmarena.com/weekly_poll_would_you_buy_the_oppo_reno16_what_about_the_oppo_reno16_pro-news-73462.php"
         }
       ]
     },
@@ -1338,6 +1498,24 @@ window.DATA = {
           "summary": "沪深两市多家上市公司6月26日晚间发布重要公告，以下为利好的消息汇总： 旗滨集团：拟定增募资不超过14.27亿元 用于超薄柔性玻璃（UTG）制造平台及玻璃基板项目等 旗滨集团(601636)6月26日公告，拟定增募资不超过14.27亿元，用于超薄柔性玻璃（UTG）制造平台及玻璃基板项目、高透在线CVD-FTO导电玻璃技",
           "source": "东方财富资讯"
         }
+      ],
+      "points": [
+        {
+          "t": "台湾电子行业保持乐观，AI需求拉动出口增长（华尔街见闻）",
+          "url": "https://www.cnbc.com/2026/06/29/oil-prices-wti-brent-crude-us-iran-strikes-strait-hormuz-talks.html"
+        },
+        {
+          "t": "CATL将钠离子电池打造为锂资源对冲工具，覆盖电动车和储能双场景（华尔街见闻）",
+          "url": "https://wallstreetcn.com/articles/3775711"
+        },
+        {
+          "t": "LG扩大数据中心液冷布局，瞄准台湾服务器合作伙伴关系（华尔街见闻）",
+          "url": "https://wallstreetcn.com/articles/3775710"
+        },
+        {
+          "t": "AIC因AI基础设施转向机架级系统而实现两位数增长（华尔街见闻）",
+          "url": "https://www.cnbc.com/2026/06/28/trump-threatens-iran-with-annihilation-kuwait-bahrain-report-attacks.html"
+        }
       ]
     },
     {
@@ -1473,6 +1651,24 @@ window.DATA = {
           "ts": 1782139972,
           "summary": "Recent observations suggest that dark energy is changing over time. Theorists wonder if dark matter is, too. The post A Dark Dimension Could Link Two of the Uni",
           "source": "Quanta Magazine"
+        }
+      ],
+      "points": [
+        {
+          "t": "Euclid望远镜拍到银河系核心区域图像（NASA）",
+          "url": "https://www.sciencedaily.com/releases/2026/06/260625014830.htm"
+        },
+        {
+          "t": "日本探测器7月5日将超近距离飞越小行星，有望发现新的太空岩石种类（Space.com）",
+          "url": "https://www.sciencedaily.com/releases/2026/06/260626124659.htm"
+        },
+        {
+          "t": "NASA宣布2026年载人着陆器挑战赛获奖者（NASA）",
+          "url": "https://www.quantamagazine.org/after-80-years-mathematicians-give-famed-erdos-method-an-upgrade-20260626/"
+        },
+        {
+          "t": "NASA测试新型太空加油装置，为未来在轨加油任务做准备（NASA）",
+          "url": "https://www.sciencedaily.com/releases/2026/06/260625014805.htm"
         }
       ]
     }
